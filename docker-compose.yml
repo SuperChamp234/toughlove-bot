@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+
+  redis:
+    container_name: tl_redis
+    image: redis
+    restart: always
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis:/data
+
+  bot:
+    container_name: tl_bot
+    build: .
+    depends_on:
+      - redis
+    links:
+      - redis
+    environment:
+      NODE_ENV: production
+      REDIS_URL: redis://redis
+      REDIS_PREFIX: 'tl'
+
+volumes:
+  redis:
+    driver: local

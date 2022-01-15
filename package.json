@@ -1,0 +1,30 @@
+{
+  "name": "toughlove-bot",
+  "version": "1.0.0",
+  "description": "ToughLove Bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "lint": "eslint --fix . && echo 'Lint complete.'",
+  "author": "ConstantFlamingo <ConstantFlamingo@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@bugsnag/js": "^7.14.1",
+    "@discordjs/builders": "^0.10.0",
+    "@discordjs/rest": "^0.2.0-canary.0",
+    "discord-api-types": "^0.26.0",
+    "discord.js": "^13.4.0",
+    "redis": "^4.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-promise": "^5.2.0",
+    "prettier": "^2.5.1"
+  }
+}
