@@ -1,7 +1,6 @@
 const fs = require("fs");
 const path = require("path");
 const __parentDir = path.dirname(process.mainModule.filename);
-const { bugsnagApiKey } = require("../config.json");
 const { Collection } = require("discord.js");
 const Bugsnag = require("@bugsnag/js");
 
@@ -46,7 +45,7 @@ module.exports = {
         });
         console.error(error);
 
-        if (bugsnagApiKey) {
+        if (process.env.BUGSNAG_API_KEY) {
           Bugsnag.notify(error);
         }
       }
@@ -68,7 +67,7 @@ module.exports = {
         });
         console.error(error);
 
-        if (bugsnagApiKey) {
+        if (process.env.BUGSNAG_API_KEY) {
           Bugsnag.notify(error);
         }
       }

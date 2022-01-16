@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
 const fs = require("fs");
+const dotenv = require("dotenv");
+dotenv.config();
+
 const { Client, Intents } = require("discord.js");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
-const { token, guildId, roleId } = require("./config.json");
 
 const intents = new Intents();
 intents.add(
@@ -27,7 +29,7 @@ for (const file of commandFiles) {
   commands.push(command.data.toJSON());
 }
 
-const rest = new REST({ version: "9" }).setToken(token);
+const rest = new REST({ version: "9" }).setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
   client.once("ready", async () => {
@@ -54,7 +56,7 @@ const rest = new REST({ version: "9" }).setToken(token);
 
       console.log("Successfully registered application commands.");
 
-      if (guildId) {
+      if (process.env.GUILD_ID && process.env.ROLE_ID) {
         console.log("Setting command permissions.");
 
         const registeredCommands = await rest.get(
@@ -67,7 +69,7 @@ const rest = new REST({ version: "9" }).setToken(token);
               id: command.id,
               permissions: [
                 {
-                  id: roleId,
+                  id: process.env.ROLE_ID,
                   type: "ROLE",
                   permission: true,
                 },
@@ -76,8 +78,12 @@ const rest = new REST({ version: "9" }).setToken(token);
           }
         }
 
-        const guild = await client.guilds.fetch(guildId);
+        const guild = await client.guilds.fetch(process.env.GUILD_ID);
         await guild.commands.permissions.set({ fullPermissions: permissions });
+      } else {
+        console.warn(
+          "GUILD_ID and/or ROLE_ID env vars not found. Skipping Command permissions!"
+        );
       }
 
       console.log("All done!");
@@ -91,5 +97,9 @@ const rest = new REST({ version: "9" }).setToken(token);
     }, 500);
   });
 
-  client.login(token);
+  if (process.env.DISCORD_TOKEN) {
+    client.login(process.env.DISCORD_TOKEN);
+  } else {
+    throw new Error("DISCORD_TOKEN environment variable not found");
+  }
 })();

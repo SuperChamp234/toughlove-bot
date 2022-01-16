@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 
 const fs = require("fs");
-const { Client, Intents } = require("discord.js");
-const { token, bugsnagApiKey } = require("./config.json");
+const dotenv = require("dotenv");
+dotenv.config();
+
 const Redis = require("redis");
+const { Client, Intents } = require("discord.js");
 const Bugsnag = require("@bugsnag/js");
 
 const Settings = require("./settings.js");
@@ -12,8 +14,8 @@ const redisClient = Redis.createClient({
   url: process.env.REDIS_URL || "redis://localhost",
 });
 
-if (bugsnagApiKey) {
-  Bugsnag.start({ apiKey: bugsnagApiKey });
+if (process.env.BUGSNAG_API_KEY) {
+  Bugsnag.start({ apiKey: process.env.BUGSNAG_API_KEY });
 }
 
 const intents = new Intents();
@@ -45,7 +47,7 @@ redisClient.connect().then(async () => {
         } catch (e) {
           console.error(e);
 
-          if (bugsnagApiKey) {
+          if (process.env.BUGSNAG_API_KEY) {
             Bugsnag.notify(e);
           }
         }
@@ -57,7 +59,7 @@ redisClient.connect().then(async () => {
         } catch (e) {
           console.error(e);
 
-          if (bugsnagApiKey) {
+          if (process.env.BUGSNAG_API_KEY) {
             Bugsnag.notify(e);
           }
         }
@@ -65,5 +67,9 @@ redisClient.connect().then(async () => {
     }
   }
 
-  discordClient.login(token);
+  if (process.env.DISCORD_TOKEN) {
+    discordClient.login(process.env.DISCORD_TOKEN);
+  } else {
+    throw new Error("DISCORD_TOKEN environment variable not found");
+  }
 });

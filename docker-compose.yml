@@ -2,26 +2,32 @@ version: '3.8'
 services:
 
   redis:
-    container_name: tl_redis
     image: redis
+    command: redis-server --appendonly yes
     restart: always
-    ports:
-      - '6379:6379'
+    expose:
+      - 6379
     volumes:
-      - redis:/data
+      - tl-bot-volume:/data
+    networks:
+      - tl-bot-network
+    environment:
+      - REDIS_APPENDFSYNC=always
+      - REDIS_REPLICATION_MODE=master
 
   bot:
-    container_name: tl_bot
     build: .
-    depends_on:
-      - redis
     links:
       - redis
+    networks:
+      - tl-bot-network
     environment:
       NODE_ENV: production
       REDIS_URL: redis://redis
       REDIS_PREFIX: 'tl'
 
+networks:
+  tl-bot-network:
+
 volumes:
-  redis:
-    driver: local
+  tl-bot-volume:
