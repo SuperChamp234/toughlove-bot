@@ -16,28 +16,31 @@ class Settings {
     return msg.replace(/\\n/g, "\n");
   }
 
-  async setQuestions(questions) {
+  async setQuestions(questions,type="application") {
     await this.redisClient.set(
-      `${REDIS_PREFIX}:questions`,
+      `${REDIS_PREFIX}:questions:${type}`,
       JSON.stringify(questions)
     );
   }
 
-  async getQuestions() {
-    return JSON.parse(
-      (await this.redisClient.get(`${REDIS_PREFIX}:questions`)) || "[]"
-    );
+  async getQuestions(type) {
+    if(type=="sample") //because there isn't a sample questions setter.
+      return [
+        "Goal for the week:",
+        "How it connects to your main goal(s): (Why is it vital for you to complete it?)",
+        "How you plan to accomplish it: (Please be as specific as possible and add as many steps as needed)",
+        "Time frame you're looking at for accomplishing this goal:",
+        "How you will prove that you've done this goal:",
+        "Reflection/thoughts you've had while setting this goal:",
+      ];
+    else 
+      return JSON.parse(
+        (await this.redisClient.get(`${REDIS_PREFIX}:questions:${type}`)) || "[]"
+      );
   }
 
   async getSamplePostQuestions() {
-    return [
-      "Goal for the week:",
-      "How it connects to your main goal(s): (Why is it vital for you to complete it?)",
-      "How you plan to accomplish it: (Please be as specific as possible and add as many steps as needed)",
-      "Time frame you're looking at for accomplishing this goal:",
-      "How you will prove that you've done this goal:",
-      "Reflection/thoughts you've had while setting this goal:",
-    ];
+    
   }
 
   async setChannelId(id) {
