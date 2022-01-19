@@ -69,7 +69,7 @@ class TLApplication {
           .send(text);
       }
     } else {
-      const questions = (await this.settings.getSamplePostQuestions()) || [];
+      const questions = (await this.settings.getPostQuestions("sample")) || [];
       const index = this.applicationData.current_sample_question;
       let text = "";
       if (index < questions.length) {
@@ -90,9 +90,9 @@ class TLApplication {
 
   // TODO Refactor
   async _saveAnswer(message) {
-    const questions = (await this.settings.getQuestions()) || [];
+    const questions = (await this.settings.getQuestions("application")) || [];
     const sampleQuestions =
-      (await this.settings.getSamplePostQuestions()) || [];
+      (await this.settings.getQuestions("sample")) || [];
 
     if (this.applicationData.current_question <= questions.length - 1) {
       let obj = {
@@ -264,7 +264,7 @@ class TLApplication {
       });
     }
 
-    const sampleQuestions = await this.settings.getSamplePostQuestions();
+    const sampleQuestions = await this.settings.getPostQuestions("sample");
     for (let i = 0; i < sampleQuestions.length; i++) {
       sampleEmbed.addFields({
         name: `${i + 1}. ${sampleQuestions[i]}`,
